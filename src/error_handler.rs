@@ -1,5 +1,5 @@
 use std::fs::{self, OpenOptions};
-use std::io::{self, Write};
+use std::io::{Write};
 use std::time::SystemTime;
 use std::path::Path;
 use chrono::prelude::*;

@@ -7,10 +7,7 @@ mod query_update; // Updated from query_change to query_update
 mod query_delete;
 mod error_handler;
 
-use std::fs::{self, OpenOptions};
 use std::io::{self, Write};
-use std::time::SystemTime;
-use std::path::Path;
 
 fn main() {
     loop {
