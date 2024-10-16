@@ -46,11 +46,6 @@ fn load_config_file(config_file: &str) -> Result<Value, String> {
     if Path::new(config_file).exists() {
         let file_content = fs::read_to_string(config_file)
             .map_err(|e| format!("Failed to read config file: {}", e))?;
-
-        if file_content.trim().is_empty() {
-            return Ok(json!({})); // a modified part
-        }
-
         let json_data: Value = serde_json::from_str(&file_content)
             .map_err(|e| format!("Failed to parse config file: {}", e))?;
         Ok(json_data)
