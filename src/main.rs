@@ -2,12 +2,15 @@ mod _config;
 mod aws_register;
 mod aws_update;
 mod aws_delete;
+mod aws_show;
 mod query_register;
 mod query_update; // Updated from query_change to query_update
 mod query_delete;
+mod query_show;
 mod error_handler;
 
 use std::io::{self, Write};
+use log::error;
 
 fn main() {
     loop {
@@ -58,6 +61,7 @@ fn aws_config_menu() {
     println!("1. AWS Register");
     println!("2. AWS Update");
     println!("3. AWS Delete");
+    println!("4. AWS SHOW");
 
     let mut choice = String::new();
     io::stdin().read_line(&mut choice).expect("Failed to read input");
@@ -81,7 +85,13 @@ fn aws_config_menu() {
                 error_handler::log_error(e); // Call the error handler
             }
         }
-        _ => println!("Invalid choice! Please select 1, 2, 3."),
+        "4" => {
+            // AWS Show
+            if let Err(e) = aws_show::show() {
+                error_handler::log_error(e);
+            }
+        }
+        _ => println!("Invalid choice! Please select 1, 2, 3, 4."),
     }
 }
 
@@ -91,6 +101,7 @@ fn query_config_menu() {
     println!("1. Query Register");
     println!("2. Query Update");
     println!("3. Query Delete");
+    println!("4. Query Show");
 
     let mut choice = String::new();
     io::stdin().read_line(&mut choice).expect("Failed to read input");
@@ -112,6 +123,12 @@ fn query_config_menu() {
             // Query Delete
             if let Err(e) = query_delete::delete() {
                 error_handler::log_error(e); // Call the error handler
+            }
+        }
+        "4" => {
+            // Query Show
+            if let Err(e) = query_show::show() {
+                error_handler::log_error(e);
             }
         }
         _ => println!("Invalid choice! Please select 1, 2, 3."),
