@@ -1,23 +1,16 @@
-// Program Config
 mod _config;
-
-// AWS Config
 mod aws_register;
 mod aws_update;
 mod aws_delete;
-
-// CloudTrail Lake Query Config
 mod query_register;
 mod query_update;
 mod query_delete;
-
-// Error Handler
 mod error_handler;
 
 use std::fs::{self, OpenOptions};
 use std::io::{self, Write};
-use std::path::Path;
 use std::time::SystemTime;
+use std::path::Path;
 
 fn main() {
     loop {
@@ -46,7 +39,6 @@ fn main() {
                 query_config_menu();
             }
             "4" => {
-                // Exit
                 println!("Exiting...");
                 break;
             }
@@ -57,10 +49,9 @@ fn main() {
 
 // Function to run the query
 fn run_query() -> Result<(), String> {
-    // Load and execute the query (use query_change.rs for the loaded query)
-    // Placeholder logic - Replace with actual query execution logic
+    // TODO: Load and execute the current query using the query_change module
     println!("Running current query...");
-    // Simulating an error for demo purposes
+    // Placeholder error to simulate a failure
     Err("Query execution failed".to_string())
 }
 
@@ -76,21 +67,24 @@ fn aws_config_menu() {
 
     match choice.trim() {
         "1" => {
+            // AWS Register
             if let Err(e) = aws_register::register() {
                 log_error(e);
             }
         }
         "2" => {
+            // AWS Update
             if let Err(e) = aws_update::update() {
                 log_error(e);
             }
         }
         "3" => {
+            // AWS Delete
             if let Err(e) = aws_delete::delete() {
                 log_error(e);
             }
         }
-        _ => println!("Invalid choice! Please select 1, 2, or 3."),
+        _ => println!("Invalid choice! Please select 1, 2, 3."),
     }
 }
 
@@ -106,21 +100,24 @@ fn query_config_menu() {
 
     match choice.trim() {
         "1" => {
+            // Query Register
             if let Err(e) = query_register::register() {
                 log_error(e);
             }
         }
         "2" => {
+            // Query Update
             if let Err(e) = query_update::update() {
                 log_error(e);
             }
         }
         "3" => {
+            // Query Delete
             if let Err(e) = query_delete::delete() {
                 log_error(e);
             }
         }
-        _ => println!("Invalid choice! Please select 1, 2, or 3."),
+        _ => println!("Invalid choice! Please select 1, 2, 3."),
     }
 }
 
