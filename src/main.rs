@@ -10,7 +10,6 @@ mod query_show;
 mod error_handler;
 
 use std::io::{self, Write};
-use log::error;
 
 fn main() {
     loop {
