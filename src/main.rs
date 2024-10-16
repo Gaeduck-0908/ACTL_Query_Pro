@@ -3,7 +3,7 @@ mod aws_register;
 mod aws_update;
 mod aws_delete;
 mod query_register;
-mod query_update;
+mod query_update; // Updated from query_change to query_update
 mod query_delete;
 mod error_handler;
 
@@ -27,7 +27,7 @@ fn main() {
             "1" => {
                 // Run Query logic
                 if let Err(e) = run_query() {
-                    log_error(e);
+                    error_handler::log_error(e); // Call the error handler
                 }
             }
             "2" => {
@@ -49,7 +49,7 @@ fn main() {
 
 // Function to run the query
 fn run_query() -> Result<(), String> {
-    // TODO: Load and execute the current query using the query_change module
+    // TODO: Load and execute the current query using the query_update module
     println!("Running current query...");
     // Placeholder error to simulate a failure
     Err("Query execution failed".to_string())
@@ -69,19 +69,19 @@ fn aws_config_menu() {
         "1" => {
             // AWS Register
             if let Err(e) = aws_register::register() {
-                log_error(e);
+                error_handler::log_error(e); // Call the error handler
             }
         }
         "2" => {
             // AWS Update
             if let Err(e) = aws_update::update() {
-                log_error(e);
+                error_handler::log_error(e); // Call the error handler
             }
         }
         "3" => {
             // AWS Delete
             if let Err(e) = aws_delete::delete() {
-                log_error(e);
+                error_handler::log_error(e); // Call the error handler
             }
         }
         _ => println!("Invalid choice! Please select 1, 2, 3."),
@@ -102,44 +102,21 @@ fn query_config_menu() {
         "1" => {
             // Query Register
             if let Err(e) = query_register::register() {
-                log_error(e);
+                error_handler::log_error(e); // Call the error handler
             }
         }
         "2" => {
             // Query Update
             if let Err(e) = query_update::update() {
-                log_error(e);
+                error_handler::log_error(e); // Call the error handler
             }
         }
         "3" => {
             // Query Delete
             if let Err(e) = query_delete::delete() {
-                log_error(e);
+                error_handler::log_error(e); // Call the error handler
             }
         }
         _ => println!("Invalid choice! Please select 1, 2, 3."),
     }
-}
-
-// Function to log errors into logs/ directory with timestamp
-fn log_error(err_msg: String) {
-    let now = SystemTime::now();
-    let datetime: chrono::DateTime<chrono::Utc> = now.into();
-    let log_dir = "logs";
-    let log_file_name = format!("{}/{}.log", log_dir, datetime.format("%Y-%m-%d_%H-%M-%S"));
-
-    // Create logs directory if it doesn't exist
-    if !Path::new(log_dir).exists() {
-        fs::create_dir(log_dir).expect("Failed to create logs directory");
-    }
-
-    // Append to or create the log file
-    let mut file = OpenOptions::new()
-        .create(true)
-        .append(true)
-        .open(&log_file_name)
-        .expect("Failed to open log file");
-
-    writeln!(file, "[{}] ERROR: {}", datetime, err_msg).expect("Failed to write to log file");
-    println!("An error occurred: {}. Check logs for details.", err_msg);
 }
