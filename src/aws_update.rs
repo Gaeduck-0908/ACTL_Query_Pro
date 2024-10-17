@@ -3,11 +3,13 @@ use std::io::{self, Write};
 
 pub fn update() -> Result<(), String> {
     let config_file = "configure/aws_config.json";
-    let mut config = Config::new();
+    // Load the configuration and handle the Result
+    let mut config = Config::new().map_err(|e| format!("Failed to create config: {}", e))?;
 
     config.load_profiles(config_file)?;
 
     println!("Available AWS Profiles:");
+    // Access the profiles field after ensuring config is valid
     for (profile_name, _) in &config.profiles {
         println!("- {}", profile_name);
     }

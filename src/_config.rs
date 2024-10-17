@@ -7,12 +7,13 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new() -> Self {
-        Self {
+    // Update the new method to return Result
+    pub fn new() -> Result<Self, String> {
+        Ok(Self {
             selected_profile: None,
             profiles: HashMap::new(),
             queries: HashMap::new(),
-        }
+        })
     }
 
     // Load profiles from the specified config file

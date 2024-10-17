@@ -1,4 +1,5 @@
 mod _config;
+mod run_query;
 mod aws_register;
 mod aws_update;
 mod aws_delete;
@@ -9,11 +10,11 @@ mod query_delete;
 mod query_show;
 mod error_handler;
 
-use std::io::{self, Write};
+use _config::Config;
+use std::io::{self};
 use std::panic;
 
 fn main() {
-
     panic::set_hook(Box::new(|panic_info| {
         let msg = match panic_info.payload().downcast_ref::<&str>() {
             Some(s) => s.to_string(),
@@ -29,6 +30,14 @@ fn main() {
         error_handler::log_error(format!("{} - {}", location, msg));
     }));
 
+    let config = match Config::new() {
+        Ok(cfg) => cfg,
+        Err(e) => {
+            eprintln!("Failed to initialize config: {}", e);
+            return;
+        }
+    };
+
     loop {
         println!("\nSelect an option:");
         println!("1. Run Query");
@@ -41,7 +50,7 @@ fn main() {
 
         match choice.trim() {
             "1" => {
-                if let Err(e) = run_query() {
+                if let Err(e) = run_query::run(&config) { // Pass the config to run_query
                     error_handler::log_error(e);
                 }
             }
@@ -55,14 +64,9 @@ fn main() {
                 println!("Exiting...");
                 break;
             }
-            _ => println!("Invalid choice! Please select 1, 2, 3, 4."),
+            _ => println!("Invalid choice! Please select 1, 2, 3, or 4."),
         }
     }
-}
-
-fn run_query() -> Result<(), String> {
-    println!("Running current query...");
-    Err("Query execution failed".to_string())
 }
 
 fn aws_config_menu() {
@@ -70,7 +74,7 @@ fn aws_config_menu() {
     println!("1. AWS Register");
     println!("2. AWS Update");
     println!("3. AWS Delete");
-    println!("4. AWS SHOW");
+    println!("4. AWS Show");
 
     let mut choice = String::new();
     io::stdin().read_line(&mut choice).expect("Failed to read input");
@@ -96,7 +100,7 @@ fn aws_config_menu() {
                 error_handler::log_error(e);
             }
         }
-        _ => println!("Invalid choice! Please select 1, 2, 3, 4."),
+        _ => println!("Invalid choice! Please select 1, 2, 3, or 4."),
     }
 }
 
@@ -131,6 +135,6 @@ fn query_config_menu() {
                 error_handler::log_error(e);
             }
         }
-        _ => println!("Invalid choice! Please select 1, 2, 3."),
+        _ => println!("Invalid choice! Please select 1, 2, 3, or 4."),
     }
 }
