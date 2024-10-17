@@ -3,9 +3,10 @@
 debug/
 target/
 
-# Ignore the query/, configure/ folder
+# Ignore the query/, configure/, logs folder
 query/
 configure/
+logs/
 
 # Ignore the .idea folder
 .idea/
