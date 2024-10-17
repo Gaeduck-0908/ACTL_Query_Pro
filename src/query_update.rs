@@ -18,6 +18,7 @@ pub fn update() -> Result<(), String> {
         if let Some(query_content) = config.get_query(&selected_query) {
             println!("Selected Query: {}", selected_query);
             println!("Query Content: {}", query_content);
+            config.set_selected_query(&selected_query);
         } else {
             println!("Query '{}' does not exist. No query selected.", selected_query);
         }
