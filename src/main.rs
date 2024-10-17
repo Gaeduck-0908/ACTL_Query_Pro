@@ -10,8 +10,25 @@ mod query_show;
 mod error_handler;
 
 use std::io::{self, Write};
+use std::panic;
 
 fn main() {
+
+    panic::set_hook(Box::new(|panic_info| {
+        let msg = match panic_info.payload().downcast_ref::<&str>() {
+            Some(s) => s.to_string(),
+            None => "Unknown panic occurred!".to_string(),
+        };
+
+        let location = if let Some(location) = panic_info.location() {
+            format!("Panicked at {}:{}", location.file(), location.line())
+        } else {
+            "No information about panic location.".to_string()
+        };
+
+        error_handler::log_error(format!("{} - {}", location, msg));
+    }));
+
     loop {
         println!("\nSelect an option:");
         println!("1. Run Query");
