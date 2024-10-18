@@ -1,10 +1,12 @@
 use crate::_config::Config;
+// Add this for date handling
+use crate::error_handler::log_error;
 use chrono::Local;
 use std::path::Path;
 use std::process::{Command, Stdio};
-// Add this for date handling
-use crate::error_handler::log_error;
 // Import your error handler
+use colored::*;
+// Import the colored crate
 
 pub(crate) fn run(config: &Config) -> Result<(), String> {
     // Check if a profile is selected
@@ -13,7 +15,7 @@ pub(crate) fn run(config: &Config) -> Result<(), String> {
         None => {
             let error_message = "No profile selected.".to_string();
             log_error(error_message.clone());
-            return Err(error_message);
+            return Err(error_message.red().to_string()); // Color the error message
         },
     };
 
@@ -23,7 +25,7 @@ pub(crate) fn run(config: &Config) -> Result<(), String> {
         None => {
             let error_message = "No query selected.".to_string();
             log_error(error_message.clone());
-            return Err(error_message);
+            return Err(error_message.red().to_string()); // Color the error message
         },
     };
 
@@ -32,7 +34,7 @@ pub(crate) fn run(config: &Config) -> Result<(), String> {
         None => {
             let error_message = format!("Query '{}' not found.", query_name);
             log_error(error_message.clone());
-            return Err(error_message);
+            return Err(error_message.red().to_string()); // Color the error message
         },
     };
 
@@ -41,13 +43,13 @@ pub(crate) fn run(config: &Config) -> Result<(), String> {
         .ok_or_else(|| {
             let error_message = format!("No query statement found in query '{}'", query_name);
             log_error(error_message.clone());
-            error_message
+            error_message.red().to_string() // Color the error message
         })?
         .as_str()
         .ok_or_else(|| {
             let error_message = format!("Query statement for '{}' is not in valid string format", query_name);
             log_error(error_message.clone());
-            error_message
+            error_message.red().to_string() // Color the error message
         })?;
 
     println!("Starting query '{}' with profile '{}'", query_name, profile_name);
@@ -65,13 +67,13 @@ pub(crate) fn run(config: &Config) -> Result<(), String> {
         .map_err(|e| {
             let error_message = format!("Failed to start query: {}", e);
             log_error(error_message.clone());
-            error_message
+            error_message.red().to_string() // Color the error message
         })?;
 
     if !command_output.status.success() {
         let error_message = format!("Query execution failed: {}", String::from_utf8_lossy(&command_output.stderr));
         log_error(error_message.clone());
-        return Err(error_message);
+        return Err(error_message.red().to_string()); // Color the error message
     }
 
     let output_str = String::from_utf8_lossy(&command_output.stdout);
@@ -79,7 +81,7 @@ pub(crate) fn run(config: &Config) -> Result<(), String> {
         .map_err(|e| {
             let error_message = format!("Failed to parse query response to JSON: {}", e);
             log_error(error_message.clone());
-            error_message
+            error_message.red().to_string() // Color the error message
         })?;
 
     // Extract the query ID from the response
@@ -87,13 +89,13 @@ pub(crate) fn run(config: &Config) -> Result<(), String> {
         .ok_or_else(|| {
             let error_message = "No query ID found in the response.".to_string();
             log_error(error_message.clone());
-            error_message
+            error_message.red().to_string() // Color the error message
         })?
         .as_str()
         .ok_or_else(|| {
             let error_message = "Query ID is not in valid string format.".to_string();
             log_error(error_message.clone());
-            error_message
+            error_message.red().to_string() // Color the error message
         })?;
 
     // Wait for the query results
@@ -110,13 +112,13 @@ pub(crate) fn run(config: &Config) -> Result<(), String> {
         .map_err(|e| {
             let error_message = format!("Failed to retrieve query results: {}", e);
             log_error(error_message.clone());
-            error_message
+            error_message.red().to_string() // Color the error message
         })?;
 
     if !results_command_output.status.success() {
         let error_message = format!("Failed to get query results: {}", String::from_utf8_lossy(&results_command_output.stderr));
         log_error(error_message.clone());
-        return Err(error_message);
+        return Err(error_message.red().to_string()); // Color the error message
     }
 
     let results_output_str = String::from_utf8_lossy(&results_command_output.stdout);
@@ -124,7 +126,7 @@ pub(crate) fn run(config: &Config) -> Result<(), String> {
         .map_err(|e| {
             let error_message = format!("Failed to parse query results to JSON: {}", e);
             log_error(error_message.clone());
-            error_message
+            error_message.red().to_string() // Color the error message
         })?;
 
     let current_date = Local::now().format("%Y-%m-%d").to_string();
@@ -134,7 +136,7 @@ pub(crate) fn run(config: &Config) -> Result<(), String> {
     std::fs::create_dir_all("results").map_err(|e| {
         let error_message = format!("Failed to create results directory: {}", e);
         log_error(error_message.clone());
-        error_message
+        error_message.red().to_string() // Color the error message
     })?;
 
     json_to_csv(&json_results, &output_path)?;

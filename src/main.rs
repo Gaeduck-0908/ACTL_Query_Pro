@@ -11,8 +11,10 @@ mod query_show;
 mod error_handler;
 
 use _config::Config;
+use colored::*;
 use std::io::{self};
 use std::panic;
+// Import the colored crate
 
 fn main() {
     panic::set_hook(Box::new(|panic_info| {
@@ -33,17 +35,17 @@ fn main() {
     let config = match Config::new() {
         Ok(cfg) => cfg,
         Err(e) => {
-            eprintln!("Failed to initialize config: {}", e);
+            eprintln!("{}", format!("Failed to initialize config: {}", e).red());
             return;
         }
     };
 
     loop {
-        println!("\nSelect an option:");
-        println!("1. Run Query");
-        println!("2. AWS Config");
-        println!("3. Query Config");
-        println!("4. Exit");
+        println!("\n{}", "Select an option:".bold().cyan());
+        println!("{}", "1. Run Query".green());
+        println!("{}", "2. AWS Config".green());
+        println!("{}", "3. Query Config".green());
+        println!("{}", "4. Exit".green());
 
         let mut choice = String::new();
         io::stdin().read_line(&mut choice).expect("Failed to read input");
@@ -61,20 +63,20 @@ fn main() {
                 query_config_menu();
             }
             "4" => {
-                println!("Exiting...");
+                println!("{}", "Exiting...".yellow());
                 break;
             }
-            _ => println!("Invalid choice! Please select 1, 2, 3, or 4."),
+            _ => println!("{}", "Invalid choice! Please select 1, 2, 3, or 4.".red()),
         }
     }
 }
 
 fn aws_config_menu() {
-    println!("\nAWS Config:");
-    println!("1. AWS Register");
-    println!("2. AWS Update");
-    println!("3. AWS Delete");
-    println!("4. AWS Show");
+    println!("\n{}", "AWS Config:".bold().cyan());
+    println!("{}", "1. AWS Register".green());
+    println!("{}", "2. AWS Update".green());
+    println!("{}", "3. AWS Delete".green());
+    println!("{}", "4. AWS Show".green());
 
     let mut choice = String::new();
     io::stdin().read_line(&mut choice).expect("Failed to read input");
@@ -100,16 +102,16 @@ fn aws_config_menu() {
                 error_handler::log_error(e);
             }
         }
-        _ => println!("Invalid choice! Please select 1, 2, 3, or 4."),
+        _ => println!("{}", "Invalid choice! Please select 1, 2, 3, or 4.".red()),
     }
 }
 
 fn query_config_menu() {
-    println!("\nQuery Config:");
-    println!("1. Query Register");
-    println!("2. Query Update");
-    println!("3. Query Delete");
-    println!("4. Query Show");
+    println!("\n{}", "Query Config:".bold().cyan());
+    println!("{}", "1. Query Register".green());
+    println!("{}", "2. Query Update".green());
+    println!("{}", "3. Query Delete".green());
+    println!("{}", "4. Query Show".green());
 
     let mut choice = String::new();
     io::stdin().read_line(&mut choice).expect("Failed to read input");
@@ -135,6 +137,6 @@ fn query_config_menu() {
                 error_handler::log_error(e);
             }
         }
-        _ => println!("Invalid choice! Please select 1, 2, 3, or 4."),
+        _ => println!("{}", "Invalid choice! Please select 1, 2, 3, or 4.".red()),
     }
 }
