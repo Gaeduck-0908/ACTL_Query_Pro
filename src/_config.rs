@@ -1,4 +1,6 @@
+use colored::*;
 use std::collections::HashMap;
+// Import the colored crate
 
 pub struct Config {
     pub selected_profile: Option<String>,
@@ -21,10 +23,18 @@ impl Config {
     // Load profiles from the specified config file
     pub fn load_profiles(&mut self, config_file: &str) -> Result<(), String> {
         let file_content = std::fs::read_to_string(config_file)
-            .map_err(|e| format!("Failed to read config file: {}", e))?;
+            .map_err(|e| {
+                let error_msg = format!("Failed to read config file: {}", e).red().to_string(); // Convert ColoredString to String
+                println!("{}", error_msg); // Print the error message
+                error_msg
+            })?;
 
         let profiles: HashMap<String, serde_json::Value> = serde_json::from_str(&file_content)
-            .map_err(|e| format!("Failed to parse config file: {}", e))?;
+            .map_err(|e| {
+                let error_msg = format!("Failed to parse config file: {}", e).red().to_string(); // Convert ColoredString to String
+                println!("{}", error_msg); // Print the error message
+                error_msg
+            })?;
 
         self.profiles = profiles;
         Ok(())
@@ -33,10 +43,18 @@ impl Config {
     // Load queries from the specified query file
     pub fn load_queries(&mut self, query_file: &str) -> Result<(), String> {
         let file_content = std::fs::read_to_string(query_file)
-            .map_err(|e| format!("Failed to read query file: {}", e))?;
+            .map_err(|e| {
+                let error_msg = format!("Failed to read query file: {}", e).red().to_string(); // Convert ColoredString to String
+                println!("{}", error_msg); // Print the error message
+                error_msg
+            })?;
 
         let queries: HashMap<String, serde_json::Value> = serde_json::from_str(&file_content)
-            .map_err(|e| format!("Failed to parse query file: {}", e))?;
+            .map_err(|e| {
+                let error_msg = format!("Failed to parse query file: {}", e).red().to_string(); // Convert ColoredString to String
+                println!("{}", error_msg); // Print the error message
+                error_msg
+            })?;
 
         self.queries = queries;
         Ok(())
